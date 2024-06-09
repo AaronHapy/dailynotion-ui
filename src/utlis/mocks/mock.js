@@ -1,9 +1,11 @@
 export const fixtures = [
     {
+        id: 'qZWPXPovkGI',
         title: '1000th Upload: Happy Tree Friends Holiday Marathon',
         source: './path',
         thumbnail: 'https://i.ytimg.com/vi/bHOHGz87_38/hq720.jpg?sqp=-oaymwE2CNAFEJQDSFXyq4qpAygIARUAAIhCGAFwAcABBvABAfgB_gmAAtAFigIMCAAQARgTIEEofzAP&rs=AOn4CLCTp1e2MDCK49EXgtSTKwLARQ9CjA',
         channel: 'MondoMedia',
+        channelPic: 'https://yt3.ggpht.com/ytc/AIdro_lrjNMswyLSqpdQfzf3iKJnAtPda72UlM2XT_2yURHObbc=s48-c-k-c0x00ffffff-no-rj',
         likesCount: 71000,
         views: 200000,
         uploadedDate: '11/22/2020',
