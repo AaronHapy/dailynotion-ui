@@ -13,7 +13,7 @@ const Header = () => {
             style={{ maxHeight: '100px' }}
             navbarScroll
           >
-            {/* Other navigation links can be added here */}
+          
           </Nav>
           <Form className="d-flex">
             <FormControl
@@ -26,7 +26,7 @@ const Header = () => {
           </Form>
           <Nav>
             <Nav.Link href="#userDetails">User Details</Nav.Link>
-            {/* User details and other elements can be added here */}
+            
           </Nav>
         </Navbar.Collapse>
       </Container>
