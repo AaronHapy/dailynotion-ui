@@ -1,4 +1,4 @@
-export function formatViews (views) {
+export function formatNumber (views) {
 
     const formatNumber = (n, divisor, suffix) => {
         const number = n / divisor;

@@ -1,11 +1,12 @@
 import React from 'react';
 import { Navbar, Container, Nav, Form, FormControl, Button } from 'react-bootstrap';
+import {Link} from 'react-router-dom'
 
 const Header = () => {
   return (
     <Navbar bg="dark" expand="lg" data-bs-theme="dark">
       <Container fluid>
-        <Navbar.Brand href="#home">Dailynotion</Navbar.Brand>
+        <Navbar.Brand as={Link} to='/'>Dailynotion</Navbar.Brand>
         <Navbar.Toggle aria-controls="navbarScroll" />
         <Navbar.Collapse id="navbarScroll">
           <Nav

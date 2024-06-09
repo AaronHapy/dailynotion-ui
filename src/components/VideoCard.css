@@ -1,0 +1,54 @@
+/* VideoCard.css */
+
+.videoCard {
+    margin-bottom: 15px;
+  }
+  
+  .rowCard {
+    width: 25rem;
+    margin-right: 15px;
+  }
+  
+  .columnCard {
+    width: 100%;
+  }
+  
+  .cardLink {
+    text-decoration: none;
+    color: inherit; /* Ensure link color matches text color */
+  }
+  
+  .cardContent {
+    width: 100%;
+  }
+  
+  .columnImage {
+    height: 100px;
+  }
+  
+  .channelImage {
+    width: 50px;
+    height: 50px;
+  }
+  
+  .contentDetails {
+    width: 75%;
+  }
+  
+  .title {
+    font-size: 16px;
+  }
+  
+  .largeFont {
+    font-size: 16px;
+  }
+  
+  .smallFont {
+    font-size: 13px;
+  }
+  
+  .columnCard .channelName,
+  .columnCard .views,
+  .columnCard .uploadDate {
+    font-size: 13px; /* Adjust the font size as needed */
+  }
