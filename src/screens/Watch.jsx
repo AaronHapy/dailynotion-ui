@@ -33,7 +33,7 @@ const Watch = () => {
           <div className='d-flex mt-4'>
               <div className='d-flex'>
                   <div className='d-flex'>
-                      <img src={videoData.channelPic} className='rounded' width='40' height='40' />
+                      <img src={videoData.channelPic} className='rounded' width='40' height='40' alt='description' />
                       <div className='d-flex flex-column ms-2 me-2'>
                         <span>{videoData.channel}</span>
                         <span><b>{formatNumber(videoData.channelSubscribersCount)}</b> subscribers</span>

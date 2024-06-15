@@ -1,8 +1,20 @@
 import React from 'react';
-import { Navbar, Container, Nav, Form, FormControl, Button } from 'react-bootstrap';
-import {Link} from 'react-router-dom'
+import { Navbar, Container, Nav, Form, FormControl } from 'react-bootstrap';
+import {Link} from 'react-router-dom';
+import {LinkContainer} from 'react-router-bootstrap';
+import {useDispatch, useSelector} from 'react-redux';
+import {logoutUser} from '../redux/slices/authSlice'
 
 const Header = () => {
+
+  const {isLoggedIn} = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+
+  const logout = async () => {
+    dispatch(logoutUser())
+    window.location.reload();
+  }
+
   return (
     <Navbar bg="dark" expand="lg" data-bs-theme="dark">
       <Container fluid>
@@ -23,10 +35,25 @@ const Header = () => {
               className="me-2"
               aria-label="Search"
             />
-            <Button variant="outline-primary">Search</Button>
           </Form>
           <Nav>
-            <Nav.Link href="#userDetails">User Details</Nav.Link>
+
+            {!isLoggedIn && (
+              <>
+                <LinkContainer to='/login'>
+                  <Nav.Link>Login</Nav.Link>
+                </LinkContainer>
+
+                <LinkContainer to='/register'>
+                  <Nav.Link>Register</Nav.Link>
+                </LinkContainer>
+              </>
+            )}
+
+            {isLoggedIn && (
+              <Nav.Link onClick={logout}>Logout</Nav.Link>
+            )}
+
             
           </Nav>
         </Navbar.Collapse>
