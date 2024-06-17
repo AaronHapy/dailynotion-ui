@@ -1,13 +1,22 @@
-import React from 'react';
-import { Navbar, Container, Nav, Form, FormControl } from 'react-bootstrap';
+import React, { useState } from 'react';
+import { Navbar, Container, Nav, Form, FormControl, Dropdown, Image } from 'react-bootstrap';
 import {Link} from 'react-router-dom';
 import {LinkContainer} from 'react-router-bootstrap';
 import {useDispatch, useSelector} from 'react-redux';
-import {logoutUser} from '../redux/slices/authSlice'
+import {logoutUser} from '../redux/slices/authSlice';
+import { BsUpload, BsPerson, BsFillHouseDoorFill, BsGear, BsBoxArrowRight } from 'react-icons/bs';
+import {useUserHasChannelQuery} from '../redux/config/channelConfig';
+import Upload from './Upload';
 
 const Header = () => {
 
-  const {isLoggedIn} = useSelector((state) => state.auth);
+  const [show, setShow] = useState(false);
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
+  const {isLoggedIn, userInfo} = useSelector((state) => state.auth);
+  const {isSuccess, data} = useUserHasChannelQuery(userInfo?.id);
   const dispatch = useDispatch();
 
   const logout = async () => {
@@ -28,7 +37,7 @@ const Header = () => {
           >
           
           </Nav>
-          <Form className="d-flex">
+          <Form className="d-flex justify-content-center">
             <FormControl
               type="search"
               placeholder="Search"
@@ -36,7 +45,7 @@ const Header = () => {
               aria-label="Search"
             />
           </Form>
-          <Nav>
+          <Nav className='me-5 pe-5'>
 
             {!isLoggedIn && (
               <>
@@ -50,13 +59,56 @@ const Header = () => {
               </>
             )}
 
-            {isLoggedIn && (
-              <Nav.Link onClick={logout}>Logout</Nav.Link>
+            {isLoggedIn && userInfo && (
+              <>
+                <Dropdown drop='down'>
+                  <Dropdown.Toggle variant="dark">
+                    <Image src={userInfo.profilePicture} width='30' height='30' rounded />
+                  </Dropdown.Toggle>
+            
+                  <Dropdown.Menu>
+                    <Dropdown.Item onClick={handleShow}> 
+                      <BsUpload /> Upload a video
+                    </Dropdown.Item>
+
+                    {isSuccess && data && data.channelExists === true ? (
+                      <LinkContainer to={`/channel/${data.channelId}`}>
+                        <Dropdown.Item> 
+                          <BsPerson /> Your Channel
+                        </Dropdown.Item>
+                      </LinkContainer>
+                    ) : (
+                      <LinkContainer to={`/create/channel`}>
+                      <Dropdown.Item> 
+                        <BsPerson /> Create Channel
+                      </Dropdown.Item>
+                    </LinkContainer>
+                    )}
+                    
+                    <LinkContainer to={`/studio/${userInfo.id}`}>
+                      <Dropdown.Item> 
+                        <BsFillHouseDoorFill /> Studio
+                      </Dropdown.Item>
+                    </LinkContainer>
+                    
+                    <Dropdown.Item onClick={logout}> <BsBoxArrowRight /> Logout</Dropdown.Item>
+                    <Dropdown.Divider />
+
+                    <LinkContainer to='/settings'>
+                      <Dropdown.Item> 
+                        <BsGear /> Settings
+                      </Dropdown.Item>
+                    </LinkContainer>
+                    
+                  </Dropdown.Menu>
+                </Dropdown>
+              </>
             )}
 
             
           </Nav>
         </Navbar.Collapse>
+        <Upload show={show} handleClose={handleClose} />
       </Container>
     </Navbar>
   );

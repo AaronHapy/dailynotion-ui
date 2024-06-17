@@ -12,6 +12,21 @@ export const authConfig = createApi({
             }),
         }),
 
+        registerUser: builder.mutation({
+            query: (formData) => ({
+                url: 'register',
+                method: 'POST',
+                body: formData,
+                responseHandler: async (response) => {
+                    if (!response.ok) {
+                        const errorMessage = await response.text();
+                        throw new Error(errorMessage || 'Failed to create channel');
+                    }
+                    return await response.text();
+                }
+            })
+        }),
+
         userDetails: builder.query({
             query: () => ({
                 url: 'userDetails',
@@ -24,4 +39,4 @@ export const authConfig = createApi({
     })
 });
 
-export const {useLoginUserMutation, useUserDetailsQuery} = authConfig;
+export const {useLoginUserMutation, useUserDetailsQuery, useRegisterUserMutation} = authConfig;

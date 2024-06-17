@@ -2,7 +2,7 @@ import {createSlice} from '@reduxjs/toolkit'
 import {authConfig} from '../config/authConfig'
 
 const initialState = {
-    userInfo: localStorage.getItem("userInfo") || {},
+    userInfo: JSON.parse(localStorage.getItem("userInfo")) || {},
     isLoggedIn: !!localStorage.getItem('userInfo'),
     status: '',
     error: null

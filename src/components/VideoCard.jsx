@@ -41,7 +41,7 @@ VideoCard.propTypes = {
     title: PropTypes.string.isRequired,
     channel: PropTypes.string.isRequired,
     views: PropTypes.number.isRequired,
-    uploadedDate: PropTypes.instanceOf(Date).isRequired,
+    uploadedDate: PropTypes.string.isRequired,
   }).isRequired,
   orderColumn: PropTypes.oneOf(['row', 'column']).isRequired,
 };
