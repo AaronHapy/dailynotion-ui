@@ -16,14 +16,7 @@ export const authConfig = createApi({
             query: (formData) => ({
                 url: 'register',
                 method: 'POST',
-                body: formData,
-                responseHandler: async (response) => {
-                    if (!response.ok) {
-                        const errorMessage = await response.text();
-                        throw new Error(errorMessage || 'Failed to create channel');
-                    }
-                    return await response.text();
-                }
+                body: formData
             })
         }),
 

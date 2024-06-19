@@ -4,7 +4,8 @@ import {authConfig} from '../config/authConfig'
 const initialState = {
     userInfo: JSON.parse(localStorage.getItem("userInfo")) || {},
     isLoggedIn: !!localStorage.getItem('userInfo'),
-    status: '',
+    loading: false,
+    isSuccess: false,
     error: null
 };
 
@@ -24,22 +25,40 @@ const authSlice = createSlice({
             .addMatcher(authConfig.endpoints.loginUser.matchFulfilled, (state, action) => {
                 const {accessToken} = action.payload;
                 localStorage.setItem("token", accessToken);
-                state.status = 'sucess';
+                state.loading = false;
                 state.isLoggedIn = true;
+                state.isSuccess = true;
             })
 
             .addMatcher(authConfig.endpoints.loginUser.matchPending, (state) => {
-                state.status = 'loading';
+                state.loading = true;
+                state.isSuccess = false;
             })
 
             .addMatcher(authConfig.endpoints.loginUser.matchRejected, (state, action) => {
-                state.status = 'failed';
-                state.error = action.error.message
+                state.loading = false;
+                state.isSuccess = false;
+                state.error = action.error
             })
 
             .addMatcher(authConfig.endpoints.userDetails.matchFulfilled, (state, action) => {
                 state.userInfo = action.payload;
                 localStorage.setItem("userInfo", JSON.stringify(action.payload));
+            })
+
+            .addMatcher(authConfig.endpoints.registerUser.matchFulfilled, (state) => {
+                state.loading = false;
+                state.isSuccess = true;
+            })
+
+            .addMatcher(authConfig.endpoints.registerUser.matchPending, (state) => {
+                state.loading = true;
+                state.isSuccess = false;
+            })
+
+            .addMatcher(authConfig.endpoints.registerUser.matchRejected, (state) => {
+                state.loading = false;
+                state.isSuccess = false;
             })
     }
 });

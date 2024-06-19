@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {useUserHasChannelQuery} from '../redux/config/channelConfig';
 import {useSelector, useDispatch} from 'react-redux';
 import {useNavigate} from 'react-router-dom';
-import {Container, Row, Col, Card, Form, Button} from 'react-bootstrap';
+import {Container, Row, Col, Card, Form, Button, Spinner} from 'react-bootstrap';
 import {useCreateChannelMutation} from '../redux/config/channelConfig';
 import { setToast } from '../redux/slices/toastSlice';
 
@@ -24,7 +24,7 @@ const CreateChannel = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
-    const [createChannel, {isSuccess}] = useCreateChannelMutation();
+    const [createChannel, {isLoading}] = useCreateChannelMutation();
 
     const {isLoggedIn, userInfo} = useSelector((state) => state.auth);
 
@@ -111,6 +111,14 @@ const CreateChannel = () => {
             <Row>
                 <Col md={12}>
                     <Card className='mt-5'>
+
+                    {isLoading && (
+                        <Spinner animation='border' role='status' className='m-3'>
+                            <span className='visually-hidden'>Loading...</span>
+                        </Spinner>
+                    )}
+
+
                         <Card.Title className='text-center mt-3 mb-3'>Create your channel</Card.Title>
                         <Card.Body>
 

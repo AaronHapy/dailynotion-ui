@@ -45,11 +45,10 @@ const VideoCard = ({ content, orderColumn }) => {
 // Define PropTypes for the VideoCard component
 VideoCard.propTypes = {
   content: PropTypes.shape({
-    id: PropTypes.string.isRequired,
+    id: PropTypes.number.isRequired,
     thumbnail: PropTypes.string.isRequired,
     channelPic: PropTypes.string,
     title: PropTypes.string.isRequired,
-    channel: PropTypes.string.isRequired,
     views: PropTypes.number.isRequired,
     uploadedDate: PropTypes.string.isRequired,
   }).isRequired,

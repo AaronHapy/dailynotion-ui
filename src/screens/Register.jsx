@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {Container, Row, Col, Card, Form, Button} from 'react-bootstrap';
+import {Container, Row, Col, Card, Form, Button, Spinner} from 'react-bootstrap';
 import {useRegisterUserMutation} from '../redux/config/authConfig';
 import {useSelector, useDispatch} from 'react-redux';
 import {useNavigate} from 'react-router-dom';
@@ -17,8 +17,8 @@ const Register = () => {
 
     const [file, setFile] = useState(null);
 
-    const [registerUser, {isSuccess, isError}] = useRegisterUserMutation();
-    const {isLoggedIn} = useSelector((state) => state.auth);
+    const [registerUser] = useRegisterUserMutation();
+    const {isLoggedIn, loading} = useSelector((state) => state.auth);
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
@@ -40,6 +40,14 @@ const Register = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        if(form.username === '' || form.password === '' || 
+            form.fullName === '' || form.email === '' 
+            || form.bio === '') {
+
+            dispatch(setToast({message: 'Input fields cannot be blank', type: 'error'}))
+            return;
+        }
+
         const formData = new FormData();
 
         formData.append('userData', JSON.stringify(form));
@@ -52,40 +60,45 @@ const Register = () => {
 
         try{
 
-            const response = await registerUser(formData);
+            const response = await registerUser(formData).unwrap();
 
-            if(response.data) {
+           if(response) {
+                dispatch(setToast({message: 'User has been registered succesfully', type: 'success'}));
+                setForm({
+                    username: '',
+                    password: '',
+                    email: '',
+                    fullName: '',
+                    bio: '' 
+                });
+        
+                setFile(null);
                 navigate('/login');
-                dispatch(setToast({message: response.data, type: 'success'}));
-            }
+            } 
 
         }catch(error) {
-            dispatch(setToast({message: error.message, type: 'error'}));
+            dispatch(setToast({message: error?.data?.message, type: 'error'}));
         }
-
-
-        setForm({
-            username: '',
-            password: '',
-            email: '',
-            fullName: '',
-            bio: '' 
-        });
-
-        setFile(null);
     }
 
     useEffect(() => {
 
         if(isLoggedIn) navigate('/');
 
-    }, [isLoggedIn]);
+    }, [isLoggedIn, navigate]);
 
   return (
     <Container>
         <Row>
             <Col md={12}>
                 <Card className='mt-5'>
+
+                    {loading && (
+                        <Spinner animation='border' role='status' className='m-3'>
+                            <span className='visually-hidden'>Loading...</span>
+                        </Spinner>
+                    )}
+
                     <Card.Title className='text-center mt-3 mb-3'>Register</Card.Title>
                     <Card.Body>
                         <Form onSubmit={handleSubmit}>

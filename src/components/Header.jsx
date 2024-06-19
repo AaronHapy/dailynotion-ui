@@ -1,16 +1,16 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Navbar, Container, Nav, Form, FormControl, Dropdown, Image } from 'react-bootstrap';
 import {Link} from 'react-router-dom';
 import {LinkContainer} from 'react-router-bootstrap';
 import {useDispatch, useSelector} from 'react-redux';
 import {logoutUser} from '../redux/slices/authSlice';
-import { BsUpload, BsPerson, BsFillHouseDoorFill, BsGear, BsBoxArrowRight } from 'react-icons/bs';
+import { BsPerson, BsFillHouseDoorFill, BsGear, BsBoxArrowRight } from 'react-icons/bs';
 import {useUserHasChannelQuery} from '../redux/config/channelConfig';
 
 const Header = () => {
 
   const {isLoggedIn, userInfo} = useSelector((state) => state.auth);
-  const {isSuccess, data} = useUserHasChannelQuery(userInfo?.id);
+  const {isSuccess, data} = useUserHasChannelQuery(userInfo?.id || -1);
   const dispatch = useDispatch();
 
   const logout = async () => {
@@ -62,11 +62,19 @@ const Header = () => {
             
                   <Dropdown.Menu>
                     {isSuccess && data && data.channelExists === true ? (
-                      <LinkContainer to={`/channel/${data.channelId}`}>
+                      <>
+                        <LinkContainer to={`/channel/${data.channelId}`}>
                         <Dropdown.Item> 
                           <BsPerson /> Your Channel
                         </Dropdown.Item>
-                      </LinkContainer>
+                        </LinkContainer>
+
+                        <LinkContainer to={`/studio`}>
+                        <Dropdown.Item> 
+                          <BsFillHouseDoorFill /> Studio
+                        </Dropdown.Item>
+                        </LinkContainer>
+                      </>
                     ) : (
                       <LinkContainer to={`/create/channel`}>
                       <Dropdown.Item> 
@@ -74,12 +82,6 @@ const Header = () => {
                       </Dropdown.Item>
                     </LinkContainer>
                     )}
-                    
-                    <LinkContainer to={`/studio`}>
-                      <Dropdown.Item> 
-                        <BsFillHouseDoorFill /> Studio
-                      </Dropdown.Item>
-                    </LinkContainer>
                     
                     <Dropdown.Item onClick={logout}> <BsBoxArrowRight /> Logout</Dropdown.Item>
                     <Dropdown.Divider />

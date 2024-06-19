@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Row, Col, Container, Button, Form } from 'react-bootstrap';
+import { Card, Row, Col, Container, Button, Form, Spinner } from 'react-bootstrap';
 import { useLoginUserMutation, authConfig } from '../redux/config/authConfig';
 import { useDispatch, useSelector } from 'react-redux';
 import {useNavigate} from 'react-router-dom';
@@ -9,27 +9,33 @@ const Login = () => {
     const [usernameorEmail, setUsernameOrEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    const [loginUser, { isLoading, isSuccess, isError }] = useLoginUserMutation();
+    const [loginUser] = useLoginUserMutation();
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const {isLoggedIn} = useSelector((state) => state.auth);
+    const {isLoggedIn, loading} = useSelector((state) => state.auth);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        // Let's add some validation
+        if(usernameorEmail === '' || password === '') {
+            dispatch(setToast({message: 'Input fields cannot be blank', type:'error'}))
+            return;
+        }
+
         const userCredentials = { usernameorEmail, password };
 
         try {
             const result = await loginUser(userCredentials).unwrap();
             if (result.accessToken) {
-                await dispatch(authConfig.endpoints.userDetails.initiate());
+                dispatch(authConfig.endpoints.userDetails.initiate());
                 dispatch(setToast({message: 'You logged in successfully', type: 'success'}))
-            } else {
-                throw new Error('Token not received');
             }
+
         } catch (error) {
-            dispatch(setToast({message: 'Something went wrong when trying to get your info', type: 'error'}))
+            dispatch(setToast({message: error?.data?.message, type: 'error'}))
         }
 
         setUsernameOrEmail('');
@@ -37,19 +43,20 @@ const Login = () => {
     };
 
     useEffect(() => {
-        if (isError) {
-            dispatch(setToast({message: 'Something went wrong trying to get your info', type: 'error'}))
-        }
-
         if(isLoggedIn) navigate('/');
 
-    }, [isLoading, isSuccess, isError, isLoggedIn, dispatch, navigate]);
+    }, [isLoggedIn, navigate]);
 
     return (
         <Container>
             <Row>
                 <Col md={12}>
                     <Card className='mt-5'>
+                        {loading && (
+                            <Spinner animation='border' role='status' className='m-3'>
+                                <span className='visually-hidden'>Loading...</span>
+                            </Spinner>
+                        )}
                         <Card.Title className='text-center mt-3 mb-3'>Login</Card.Title>
                         <Card.Body>
                             <Form onSubmit={handleSubmit}>

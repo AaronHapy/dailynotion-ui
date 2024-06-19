@@ -1,9 +1,33 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Container, Row, Col, Card, ListGroup, Button} from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { BsUpload } from 'react-icons/bs';
+import {useSelector} from 'react-redux';
+import {useUserHasChannelQuery} from '../redux/config/channelConfig'
 
 const Studio = () => {
+
+    const {isLoggedIn, userInfo} = useSelector((state) => state.auth);
+    const navigate = useNavigate();
+
+    const {data, isSuccess} = useUserHasChannelQuery(userInfo?.id);
+
+
+    useEffect(() => {
+
+        if(!isLoggedIn) {
+            navigate('/');
+        }
+        else {
+            if(isSuccess && data) {
+                if(data.channelId === null || data.channelId === undefined) {
+                    navigate('/');
+                }
+            }
+        }
+
+    }, [isLoggedIn, navigate, isSuccess, data]);
+
   return (
     <Container>
 

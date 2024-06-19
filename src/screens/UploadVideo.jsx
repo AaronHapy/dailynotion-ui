@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import {Button, Form, ProgressBar, Container, Row, Col, Card} from 'react-bootstrap';
+import React, {useEffect, useState} from 'react';
+import {Button, Form, ProgressBar, Container, Row, Col, Card, Spinner} from 'react-bootstrap';
 import axios from 'axios';
 import {useCreateVideoMutation} from '../redux/config/videoConfig';
 import {useUserHasChannelQuery} from '../redux/config/channelConfig';
@@ -10,7 +10,6 @@ import {setToast} from '../redux/slices/toastSlice'
 const UploadVideo = () => {
 
   const [progress, setProgress] = useState(0);
-  const [uploadStatus, setUploadStatus] = useState('select');
   const [thumbnail, setThumbnail] = useState(null);
 
   const [form, setForm] = useState({
@@ -19,10 +18,11 @@ const UploadVideo = () => {
     description: ''
   });
 
-  const {userInfo} = useSelector((state) => state.auth);
+  const {isLoggedIn, userInfo} = useSelector((state) => state.auth);
+  const {loading} = useSelector((state) => state.video);
 
-  const [createVideo, {}] = useCreateVideoMutation();
-  const {data} = useUserHasChannelQuery(userInfo?.id);
+  const [createVideo] = useCreateVideoMutation();
+  const {data, isSuccess} = useUserHasChannelQuery(userInfo?.id);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -51,7 +51,6 @@ const UploadVideo = () => {
           }
         );
   
-        setUploadStatus('done');
         setProgress(0);
 
         setForm(prevForm => ({
@@ -62,8 +61,8 @@ const UploadVideo = () => {
         dispatch(setToast({message: 'Video was upload successfully', type: 'success'}))
   
       }catch(error) {
-        setUploadStatus('select');
-        console.log(error);
+        dispatch(setToast({ message: error?.response?.data , type: 'error'}));
+        setProgress(0);
       }
 
     }
@@ -91,27 +90,26 @@ const UploadVideo = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    console.log(JSON.stringify(form));
-
     const formData = new FormData();
     formData.append("videoDetails", JSON.stringify(form));
 
     if(thumbnail) {
       formData.append("thumbnail", thumbnail);
     }
-
-    for (const entry of formData.entries()) {
-      console.log(entry);
-  }
-  
    
-
     try {
       const response = await createVideo({ formData, channelId: data?.channelId }).unwrap();
 
-      if(response.data) {
-          navigate(`/watch?v=${response.data.titleUrl}`);
+      if(response) {
           dispatch(setToast({message: 'Video was created successfully', type: 'success'}))
+          setForm({
+            title: '',
+            path: '',
+            description: ''
+          });
+
+          setThumbnail(null);
+          navigate(`/watch?v=${response.titleUrl}`);
       }
       
   } catch (error) {
@@ -121,7 +119,20 @@ const UploadVideo = () => {
 
   }
 
+  useEffect(() => {
 
+    if(!isLoggedIn) {
+      navigate('/')
+    }
+    else {
+      if(isSuccess && data) {
+        if(data.channelId === null || data.channelId === undefined) {
+            navigate('/');
+        }
+    }
+    }
+
+  }, [isLoggedIn, isSuccess, navigate, data]);
 
   return (
     <Container>
@@ -134,6 +145,13 @@ const UploadVideo = () => {
           <ProgressBar className='mb-5' now={progress} label={`${progress}%`} />
 
           <Card>
+
+              {loading && (
+                  <Spinner animation='border' role='status' className='m-3'>
+                      <span className='visually-hidden'>Loading...</span>
+                  </Spinner>
+              )}
+
             <Card.Body>
 
               <Form onSubmit={handleSubmit}>
