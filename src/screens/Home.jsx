@@ -1,10 +1,23 @@
 import React from 'react';
-import {fixtures} from '../utlis/mocks/mock'
 import GridVideos from '../components/GridVideos';
+import {useGetRandomVideosQuery} from '../redux/config/videoConfig';
+import {useSelector} from 'react-redux';
+import {Alert} from 'react-bootstrap'
 
 const Home = () => {
+
+  const {data} = useGetRandomVideosQuery();
+
+  const video = useSelector((state) => state.video);
+
   return (
-    <GridVideos videos={fixtures} orderColumn='row' />
+    <div>
+      {video.isSuccess && video.videos.length > 0 ? (
+        <GridVideos videos={video.videos} orderColumn='row' />
+      ) : (
+        <Alert variant='info'>There is no videos to show</Alert>
+      )}
+    </div>
   )
 }
 

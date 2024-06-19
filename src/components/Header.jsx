@@ -6,14 +6,8 @@ import {useDispatch, useSelector} from 'react-redux';
 import {logoutUser} from '../redux/slices/authSlice';
 import { BsUpload, BsPerson, BsFillHouseDoorFill, BsGear, BsBoxArrowRight } from 'react-icons/bs';
 import {useUserHasChannelQuery} from '../redux/config/channelConfig';
-import Upload from './Upload';
 
 const Header = () => {
-
-  const [show, setShow] = useState(false);
-
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
 
   const {isLoggedIn, userInfo} = useSelector((state) => state.auth);
   const {isSuccess, data} = useUserHasChannelQuery(userInfo?.id);
@@ -67,10 +61,6 @@ const Header = () => {
                   </Dropdown.Toggle>
             
                   <Dropdown.Menu>
-                    <Dropdown.Item onClick={handleShow}> 
-                      <BsUpload /> Upload a video
-                    </Dropdown.Item>
-
                     {isSuccess && data && data.channelExists === true ? (
                       <LinkContainer to={`/channel/${data.channelId}`}>
                         <Dropdown.Item> 
@@ -85,7 +75,7 @@ const Header = () => {
                     </LinkContainer>
                     )}
                     
-                    <LinkContainer to={`/studio/${userInfo.id}`}>
+                    <LinkContainer to={`/studio`}>
                       <Dropdown.Item> 
                         <BsFillHouseDoorFill /> Studio
                       </Dropdown.Item>
@@ -108,7 +98,6 @@ const Header = () => {
             
           </Nav>
         </Navbar.Collapse>
-        <Upload show={show} handleClose={handleClose} />
       </Container>
     </Navbar>
   );

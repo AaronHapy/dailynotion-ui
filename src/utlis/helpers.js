@@ -20,7 +20,7 @@ export function formatNumber (views) {
 
 export function timeAgo(dateStr) {
     const date = new Date(dateStr);
-    const now = new Date('2024-06-09T00:00:00');
+    const now = new Date();
     const diffInSeconds = Math.floor((now - date) / 1000);
     const minute = 60;
     const hour = minute * 60;

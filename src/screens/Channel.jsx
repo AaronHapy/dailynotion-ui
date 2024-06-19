@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import {useParams, useNavigate} from 'react-router-dom';
 import {useGetChannelDetailsQuery} from '../redux/config/channelConfig';
-import {Card, Spinner, Container, Row, Col, Image, Tabs, Tab} from 'react-bootstrap';
+import {useGetVideosByChannelQuery} from '../redux/config/videoConfig'
+import {Card, Spinner, Container, Row, Col, Image, Tabs, Tab, Alert} from 'react-bootstrap';
+import GridVideos from '../components/GridVideos';
 
 const Channel = () => {
 
     const {id} = useParams();
     const {data, isLoading, isSuccess, isError} = useGetChannelDetailsQuery(id);
+    const {data: videos, isSuccess: success} = useGetVideosByChannelQuery(id);
 
     const navigate = useNavigate();
 
@@ -68,7 +71,11 @@ const Channel = () => {
                                         Tab content for Home
                                     </Tab>
                                     <Tab eventKey="videos" title="Videos">
-                                        Tab content for Videos
+                                        {success && videos.length > 0 ? (
+                                            <GridVideos videos={videos} orderColumn="row" />
+                                        ): (
+                                            <Alert variant="info">There is no videos to show</Alert>
+                                        )}
                                     </Tab>
                                 </Tabs>
                             </Card.Body>

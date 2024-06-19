@@ -12,6 +12,8 @@ import {Provider} from 'react-redux';
 import store from './redux/store';
 import Channel from './screens/Channel';
 import CreateChannel from './screens/CreateChannel';
+import Studio from './screens/Studio';
+import UploadVideo from './screens/UploadVideo';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
@@ -24,6 +26,8 @@ const router = createBrowserRouter(
       <Route path='/register' element={<Register />} />
       <Route path='/channel/:id' element={<Channel />} />
       <Route path='/create/channel' element={<CreateChannel />} />
+      <Route path='/studio' element={<Studio />} />
+      <Route path='/studio/upload' element={<UploadVideo />} />
     </Route>
   )
 );
