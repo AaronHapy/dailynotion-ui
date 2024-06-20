@@ -2,7 +2,7 @@ import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react';
 
 export const channelConfig = createApi({
     reducerPath: 'channelConfig',
-    baseQuery: fetchBaseQuery({baseUrl: 'http://localhost:8080/api/channels/'}),
+    baseQuery: fetchBaseQuery({baseUrl: '/api/channels/'}),
     endpoints: (builder) => ({
         getChannelDetails: builder.query({
             query: (channelId) => ({

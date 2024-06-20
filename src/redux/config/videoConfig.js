@@ -2,7 +2,7 @@ import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react';
 
 export const videoConfig = createApi({
     reducerPath: 'videoConfig',
-    baseQuery: fetchBaseQuery({baseUrl: 'http://localhost:8080/api/videos'}),
+    baseQuery: fetchBaseQuery({baseUrl: '/api/videos'}),
     endpoints: (builder) => ({
         getRandomVideos: builder.query({
             query: () => ({
