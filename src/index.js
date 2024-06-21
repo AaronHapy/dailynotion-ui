@@ -14,6 +14,7 @@ import Channel from './screens/Channel';
 import CreateChannel from './screens/CreateChannel';
 import Studio from './screens/Studio';
 import UploadVideo from './screens/UploadVideo';
+import WrapperWatch from './components/WrapperWatch';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
@@ -21,7 +22,7 @@ const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path='/' element={<App />}>
       <Route index={true} path='/' element={<Home />} />
-      <Route path='/watch' element={<Watch />} />
+      <Route path='/watch' element={<WrapperWatch />} />
       <Route path='/login' element={<Login />} />
       <Route path='/register' element={<Register />} />
       <Route path='/channel/:id' element={<Channel />} />

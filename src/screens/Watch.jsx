@@ -1,10 +1,9 @@
-import React, {useEffect, useRef} from 'react';
+import React, {useRef} from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import {Container, Row, Col, Button} from 'react-bootstrap';
 import {formatNumber} from '../utlis/helpers';
 import GridVideos from '../components/GridVideos';
-import {useGetVideoDetailsQuery, useGetRandomVideosQuery, videoConfig} from '../redux/config/videoConfig';
-import {useSelector, useDispatch} from 'react-redux'
+import {useGetVideoDetailsQuery, useGetRandomVideosQuery} from '../redux/config/videoConfig';
 import VideoPlayer from '../components/VideoPlayer';
 import videojs from 'video.js';
 
@@ -18,11 +17,8 @@ const Watch = () => {
 
   const titleUrl = searchParams.get('v');
 
-  // const {data} = useGetVideoDetailsQuery(titleUrl);
-  // const {data} = useGetRandomVideosQuery();
-
-  const dispatch = useDispatch();
-  const video = useSelector((state) => state.video);
+  const {data, isSuccess} = useGetVideoDetailsQuery(titleUrl);
+  const {data: randomVideos, isSuccess: success} = useGetRandomVideosQuery();
 
   const videoJSOptions = {
     autoplay: false,
@@ -30,7 +26,7 @@ const Watch = () => {
     responsive: true,
     fuild: true,
     sources: [{
-      src: video?.video?.path,
+      src: data?.path,
       type: 'video/mp4'
     }]
   };
@@ -47,31 +43,24 @@ const Watch = () => {
     });
   }
   
-  useEffect(() => {
-
-    dispatch(videoConfig.endpoints.getVideoDetails.initiate(titleUrl));
-    dispatch(videoConfig.endpoints.getRandomVideos.initiate());
-
-  }, [dispatch, titleUrl]);
-
   return (
-    <Container className='mt-5'>
+    <Container className='mt-5' fluid>
 
-      {video.isSuccess && Object.keys(video.video).length > 0 && (
+      {isSuccess && Object.keys(data).length > 0 && (
         <Row>
           <Col md={8}>
             
             <VideoPlayer options={videoJSOptions} onReady={handlePlayerReady} />
 
-            <h2 className='mt-3'>{video?.video?.title}</h2>
+            <h2 className='mt-3'>{data?.title}</h2>
 
             <div className='d-flex mt-4'>
                 <div className='d-flex'>
                     <div className='d-flex'>
-                        <img src={video?.video?.channelDTO?.profilePic} className='rounded' width='40' height='40' alt='description' />
+                        <img src={data?.channelDTO?.profilePic} className='rounded' width='40' height='40' alt='description' />
                         <div className='d-flex flex-column ms-2 me-2'>
                           <span>
-                            <Link to={`/channel/${video?.video?.channelDTO?.id}`}>{video?.video?.channelDTO?.name}</Link>
+                            <Link to={`/channel/${data?.channelDTO?.id}`}>{data?.channelDTO?.name}</Link>
                           </span>
                           {/* <span><b>{formatNumber(videoData.channelSubscribersCount)}</b> subscribers</span> */}
                         </div>
@@ -82,13 +71,15 @@ const Watch = () => {
             </div>
 
             <div className='mt-5 bg-light pt-3 ps-3 pb-3' style={{borderRadius: '10px'}}>
-              <span><b>{formatNumber(video?.video?.views)} views  {video?.video?.uploadedDate}</b></span>
-              <p>{video?.video?.description}</p>
+              <span><b>{formatNumber(data?.views)} views  {data?.uploadedDate}</b></span>
+              <p>{data?.description}</p>
             </div>
 
           </Col>
           <Col md={4}>
-            <GridVideos videos={video?.videos} orderColumn='column' />
+            {success && (
+              <GridVideos videos={randomVideos} orderColumn='column' />
+            )}
           </Col>
         </Row>
       )}
