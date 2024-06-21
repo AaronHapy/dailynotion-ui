@@ -1,17 +1,36 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import GridVideos from '../components/GridVideos';
-import {useGetRandomVideosQuery} from '../redux/config/videoConfig';
-import {useSelector} from 'react-redux';
-import {Alert} from 'react-bootstrap'
+import {videoConfig} from '../redux/config/videoConfig';
+import {useSelector, useDispatch} from 'react-redux';
+import {Alert, Spinner} from 'react-bootstrap'
 
 const Home = () => {
 
-  const {data} = useGetRandomVideosQuery();
-
+  const dispatch = useDispatch();
   const video = useSelector((state) => state.video);
+
+  useEffect(() => {
+
+    dispatch(videoConfig.endpoints.getRandomVideos.initiate());
+
+  }, []);
 
   return (
     <div>
+
+      {video.loading && (
+          <div style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            height: '100vh'
+        }}>
+            <Spinner animation='border' role='status'>
+                <span className='visually-hidden'>Loading...</span>
+            </Spinner>
+        </div>
+      )}
+
       {video.isSuccess && video.videos.length > 0 ? (
         <GridVideos videos={video.videos} orderColumn='row' />
       ) : (
